@@ -6,21 +6,12 @@ It is very easy to use. Simply open the web page with our JavaScript code, open 
 
 # Examples
 
-```
+
 ![Screenshot](samples/vfs.png)
-```
-```
 ![Screenshot](samples/vfsCatWithoutMalware.png)
-```
-```
 ![Screenshot](samples/muddywater.png)
-```
-```
 ![Screenshot](samples/powload.png)
-```
-```
 ![Screenshot](samples/ursnif.png)
-```
 
 # Author & license
 
