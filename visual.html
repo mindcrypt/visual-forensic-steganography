@@ -1,0 +1,341 @@
+<!-- 
+March 15t, 2022 - Madrid Spain
+@version 1.0
+@mincrypt Dr. Alfonso Muñoz
+@muruenya Dr. Manuel Urueña
+GNU Lesser General Public License v3.0
+-->
+
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="visual.css"/>
+  
+  <title>VFS tool - Visual steganalisys</title>
+</head>
+<body>
+
+  <input type="file" multiple="false" id="inputImageFile"
+	 title="Load an image"
+	 accept=".png, .bmp, image/png, image/bmp" onChange="loadImageFile(this)" />
+
+  <div id="extractToolbar">
+    <select id="colorOrderSelect" disabled="true" title="Color plane order to extract"
+	    onChange="updateExtractButton()">
+      <option>--Color order--</option>
+    </select>
+    <button id="extractButton" disabled="true"
+	    title="Extract selected bit planes and color channels"
+	    onClick="extractLSB()">Extract...</button>
+  </div>
+  
+  <hr/>
+  <table id="imagePlanes">
+    <tr>
+      <th>Bit<br/>Plane</th>
+      <th>
+	<label for="rgbCheckbox1"> 
+          <span class="red">R</span>+<span class="green">G</span>+<span class="blue">B</span>
+	</label>
+	<input type="checkbox" id="rgbCheckbox1"
+	       onClick="onColorCheckboxClick(this)" />
+      </th>
+      <th>
+	<label for="redCheckbox1" class="red">Red</label>
+	<input type="checkbox" id="redCheckbox1"
+	       onClick="onColorCheckboxClick(this)" />
+      </th>
+      <th>
+	<label for="greenCheckbox1" class="green">Green</label>
+	<input type="checkbox" id="greenCheckbox1"
+	       onClick="onColorCheckboxClick(this)" />
+      </th>
+      <th>
+	<label for="blueCheckbox1" class="blue">Blue</label>
+	<input type="checkbox" id="blueCheckbox1"
+	       onClick="onColorCheckboxClick(this)" />
+      </th>
+    </tr>
+    <tr>
+      <th>
+	<label for="allCheckbox">All</label><br/>
+	<input type="checkbox" id="allCheckbox"
+	       onClick="onBitCheckboxClick(this)"/>
+      </th>
+      <td>
+	<img id="rgbImg" class="thumbnail" width="100%" height="10%"
+	     alt="Original image (in RGB Color)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="redImg" class="thumbnail" width="100%"
+	     alt="Red channel of original image (in Grayscale)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="greenImg" class="thumbnail" width="100%"
+	     alt="Green channel of original image (in Grayscale)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="blueImg" class="thumbnail" width="100%"
+	     alt="Blue channel of original image (in Grayscale)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+    </tr>
+    <tr>
+      <th>
+	<label for="bit7Checkbox">7</label><br/>
+	<input type="checkbox" id="bit7Checkbox"
+	       onClick="onBitCheckboxClick(this)"/>
+      </th>
+      <td>
+	<img id="rgb7Img" class="thumbnail" width="100%"
+	     alt="Bit 7 of original image (in RGB Color)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="red7Img" class="thumbnail" width="100%"
+	     alt="Bit 7 of Red channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="green7Img" class="thumbnail" width="100%"
+	     alt="Bit 7 of Green channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="blue7Img" class="thumbnail" width="100%"
+	     alt="Bit 7 of Blue channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+    </tr>
+    <tr>
+      <th>
+	<label for="bit6Checkbox">6</label><br/>
+	<input type="checkbox" id="bit6Checkbox"
+	       onClick="onBitCheckboxClick(this)"/>
+      </th>
+      <td>
+	<img id="rgb6Img" class="thumbnail" width="100%"
+	     alt="Bit 6 of original image (in RGB Color)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="red6Img" class="thumbnail" width="100%"
+	     alt="Bit 6 of Red channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="green6Img" class="thumbnail" width="100%"
+	     alt="Bit 6 of Green channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="blue6Img" class="thumbnail" width="100%"
+	     alt="Bit 6 of Blue channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+    </tr>
+    <tr>
+      <th>
+	<label for="bit5Checkbox">5</label><br/>
+	<input type="checkbox" id="bit5Checkbox"
+	       onClick="onBitCheckboxClick(this)"/>
+      </th>
+      <td>
+	<img id="rgb5Img" class="thumbnail" width="100%"
+	     alt="Bit 5 of original image (in RGB Color)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="red5Img" class="thumbnail" width="100%"
+	     alt="Bit 5 of Red channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="green5Img" class="thumbnail" width="100%"
+	     alt="Bit 5 of Green channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="blue5Img" class="thumbnail" width="100%"
+	     alt="Bit 5 of Blue channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+    </tr>
+    <tr>
+      <th>
+	<label for="bit4Checkbox">4</label><br/>
+	<input type="checkbox" id="bit4Checkbox"
+	       onClick="onBitCheckboxClick(this)"/>
+      </th>
+      <td>
+	<img id="rgb4Img" class="thumbnail" width="100%"
+	     alt="Bit 4 of original image (in RGB Color)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="red4Img" class="thumbnail" width="100%"
+	     alt="Bit 4 of Red channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="green4Img" class="thumbnail" width="100%"
+	     alt="Bit 4 of Green channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="blue4Img" class="thumbnail" width="100%"
+	     alt="Bit 4 of Blue channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+    </tr>
+    <tr>
+      <th>
+	<label for="bit3Checkbox">3</label><br/>
+	<input type="checkbox" id="bit3Checkbox"
+	       onClick="onBitCheckboxClick(this)"/>
+      </th>
+      <td>
+	<img id="rgb3Img" class="thumbnail" width="100%"
+	     alt="Bit 3 of original image (in RGB Color)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="red3Img" class="thumbnail" width="100%"
+	     alt="Bit 3 of Red channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="green3Img" class="thumbnail" width="100%"
+	     alt="Bit 3 of Green channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="blue3Img" class="thumbnail" width="100%"
+	     alt="Bit 3 of Blue channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+    </tr>
+    <tr>
+      <th>
+	<label for="bit2Checkbox">2</label><br/>
+	<input type="checkbox" id="bit2Checkbox"
+	       onClick="onBitCheckboxClick(this)"/>
+      </th>
+      <td>
+	<img id="rgb2Img" class="thumbnail" width="100%"
+	     alt="Bit 2 of original image (in RGB Color)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="red2Img" class="thumbnail" width="100%"
+	     alt="Bit 2 of Red channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="green2Img" class="thumbnail" width="100%"
+	     alt="Bit 2 of Green channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="blue2Img" class="thumbnail" width="100%"
+	     alt="Bit 2 of Blue channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+    </tr>
+    <tr>
+      <th>
+	<label for="bit7Checkbox">1</label><br/>
+	<input type="checkbox" id="bit1Checkbox"
+	       onClick="onBitCheckboxClick(this)"/>
+      </th>
+      <td>
+	<img id="rgb1Img" class="thumbnail" width="100%"
+	     alt="Bit 1 of original image (in RGB Color)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="red1Img" class="thumbnail" width="100%"
+	     alt="Bit 1 of Red channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="green1Img" class="thumbnail" width="100%"
+	     alt="Bit 1 of Green channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="blue1Img" class="thumbnail" width="100%"
+	     alt="Bit 1 of Blue channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+    </tr>
+    <tr>
+      <th>
+	<label for="bit0Checkbox">0</label><br/>
+	<input type="checkbox" id="bit0Checkbox"
+	       onClick="onBitCheckboxClick(this)"/>
+      </th>
+      <td>
+	<img id="rgb0Img" class="thumbnail" width="100%"
+	     alt="Bit 0 of original image (in RGB Color)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="red0Img" class="thumbnail" width="100%"
+	     alt="Bit 0 of Red channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="green0Img" class="thumbnail" width="100%"
+	     alt="Bit 0 of Green channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+      <td>
+	<img id="blue0Img" class="thumbnail" width="100%"
+	     alt="Bit 0 of Blue channel (in Black &amp; White)"
+	     onClick="showFullImgModal(this)" />
+      </td>
+    </tr>
+    <tr>
+      <th></th>
+      <th>
+	<label for="rgbCheckbox2">
+          <span class="red">R</span>+<span class="green">G</span>+<span class="blue">B</span>
+	</label>
+	<input type="checkbox" id="rgbCheckbox2"
+	       onClick="onColorCheckboxClick(this)" />
+      </th>
+      <th>
+	<label for="redCheckbox2" class="red">Red</label>
+	<input type="checkbox" id="redCheckbox2"
+	       onClick="onColorCheckboxClick(this)" />
+      </th>
+      <th>
+	<label for="greenCheckbox2" class="green">Green</label>
+	<input type="checkbox" id="greenCheckbox2"
+	       onClick="onColorCheckboxClick(this)" />
+      </th>
+      <th>
+	<label for="blueCheckbox2" class="blue">Blue</label>
+	<input type="checkbox" id="blueCheckbox2"
+	       onClick="onColorCheckboxClick(this)" />
+      </th>
+    </tr>
+  </table>
+
+  <!-- Source: https://www.w3schools.com/howto/howto_css_modal_images.asp -->
+  <div id="fullImgModal" class="modal">
+    <
+    <span class="closeModal">&times;</span>
+    <img id="fullImg" class="modal-content"
+	 onHover="" />
+    <div id="fullImgCaption"></div>
+  </div>
+
+  <script type="text/javascript" src="visual.js"></script>
+</body>
+</html>
